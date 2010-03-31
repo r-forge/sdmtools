@@ -1,25 +1,6 @@
-
-.libPaths(c(.libPaths(),'/homes/31/jc165798/R_libraries'))
-#install.packages("SDMTools", repos="http://R-Forge.R-project.org")
-#install.packages("raster", repos="http://R-Forge.R-project.org")
-library(raster)
-library(SDMTools)
-library(rgdal)
-
-setwd('/homes/31/jc165798/trial/')
-tfile = 'rf.current.asc'
-
-tasc = read.asc(tfile)
-object.size(tasc)/1024/1024
-
-traster = raster(tfile,values=T)
-object.size(traster)/1024/1024
-
-tgdal = readGDAL(tfile)
-object.size(tgdal)/1024/1024
-
+#these functions add functionality of rasters to be read and written packages dependent on raster and sp package classes
 asc.from.raster = function(x) {
-	if (!any(class(traster) %in% 'RasterLayer')) stop('x must be of class raster or RasterLayer')
+	if (!any(class(x) %in% 'RasterLayer')) stop('x must be of class raster or RasterLayer')
 	cellsize = (x@extent@ymax-x@extent@ymin)/x@nrows
 	yll = x@extent@ymin + 0.5 * cellsize
 	xll = x@extent@xmin + 0.5 * cellsize
@@ -29,6 +10,7 @@ asc.from.raster = function(x) {
 }
 raster.from.asc = function(x,projs=NA) {
 	if (class(x) != 'asc') stop('x must be of class asc')
+	require(raster)
 	cellsize = attr(x, "cellsize")
 	nrows = dim(x)[2]; ncols= dim(x)[1]
 	xmin = attr(x, "xll") - 0.5 * cellsize
@@ -51,19 +33,7 @@ asc.from.sp = function(x) {
 }
 sp.from.asc = function(x,projs=CRS(as.character(NA))) {
 	if (class(x) != 'asc') stop('x must be of class asc')
+	require(sp)
 	tgrid = GridTopology(c(attr(x, "xll"),attr(x, "yll")),rep(attr(x, "cellsize"),2),dim(x))
 	return(SpatialGridDataFrame(tgrid,data.frame(z=as.vector(unclass(x)[,dim(x)[2]:1])),proj4string=projs))
 }
-
-tgdal2=sp.from.asc(tasc)
-writeGDAL(tgdal, 'tgdal.tif', drivername = "GTiff", options="INTERLEAVE=PIXEL")
-writeGDAL(tgdal, 'tgdal.asc', drivername = "AAIGrid")
-
-traster2=raster.from.asc(tasc)
-writeRaster(traster,'traster.tif',format='GTiff')
-writeRaster(traster2,'traster2.tif',format='GTiff')
-writeRaster(traster,'traster.asc',format='ascii')
-writeRaster(traster,'traster.bil',format="BIL")
-writeRaster(traster,'traster.png',format='PNG')
-
-
