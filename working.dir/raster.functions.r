@@ -56,7 +56,14 @@ sp.from.asc = function(x,projs=CRS(as.character(NA))) {
 }
 
 tgdal2=sp.from.asc(tasc)
+writeGDAL(tgdal, 'tgdal.tif', drivername = "GTiff", options="INTERLEAVE=PIXEL")
+writeGDAL(tgdal, 'tgdal.asc', drivername = "AAIGrid")
 
 traster2=raster.from.asc(tasc)
 writeRaster(traster,'traster.tif',format='GTiff')
 writeRaster(traster2,'traster2.tif',format='GTiff')
+writeRaster(traster,'traster.asc',format='ascii')
+writeRaster(traster,'traster.bil',format="BIL")
+writeRaster(traster,'traster.png',format='PNG')
+
+
