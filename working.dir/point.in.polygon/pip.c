@@ -2,13 +2,15 @@
 /*
 this is code for extracting information about point in polygon..
 
+it assumes points that are vertices or on the border line between 
+vertices are within the polygon.
 
 */
 #include <R.h> 
 #include <Rinternals.h>
 
 double TWOPI = 2 * PI;
-double epsilon = 0.000000001; // threshold value
+double epsilon = 0.000000000001; // threshold value
 
 SEXP pip(SEXP pntx, SEXP pnty, SEXP pntn, SEXP polyx, SEXP polyy, SEXP polyn)
 {
@@ -29,12 +31,11 @@ SEXP pip(SEXP pntx, SEXP pnty, SEXP pntn, SEXP polyx, SEXP polyy, SEXP polyn)
 	
 	//define some other variables
 	int ii, jj;
-	double x, x1, x2, y, y1, y2;
+	double x, x1, x2, y, y1, y2, dy, dx;
 	
 	
 	//cycle through the points
 	for (ii=0;ii<npt;ii++) {
-		printf("point... %d \n", ii);
 		//cycle through the polygon vertices and sum the angles
 		double angle = 0.0;
 		for (jj=0;jj<npl;jj++) {
@@ -43,21 +44,18 @@ SEXP pip(SEXP pntx, SEXP pnty, SEXP pntn, SEXP polyx, SEXP polyy, SEXP polyn)
 			y1 = ply[jj]; y2 = ply[(jj+1) % npl]; y = pty[ii];
 			//check if point are vertix
 			if (x == x1 && y == y1) { angle = PI+1; break; }
-			//check if point is on border between 2 points
+			//check if point is on border line between 2 points
 			if (x == x1 && x == x2) { if ((y1 <= y && y <= y2) || (y1 >= y && y >= y2)) { angle = PI+1; break; } } // check point between two horizontal points
 			if (y == y1 && y == y2) { if ((x1 <= x && x <= x2) || (x1 >= x && x >= x2)) { angle = PI+1; break; } } // check point between two verticle points
-			if ((y1-y2)/(x1-x2) == (y1-y)/(x1-x)) { //check if points have same slope and then within bounding box of polygon points
-				if (((x1 <= x && x <= x2) || (x1 >= x && x >= x2)) && ((y1 <= y && y <= y2) || (y1 >= y && y >= y2))) { angle = PI+1; break; }
-			}
-			
-			double theta1 = atan2(y1 - y, x1 - x);
-			double theta2 = atan2(y2 - y, x2 - x);
-			double dtheta = theta2 - theta1;
-
+			dy = (y1-y)/(y1-y2); dx = (x1-x)/(x1-x2); //check if the relative change in x == relative change in y
+			printf("dx - dy ... %f - %f \n", dx, dy);
+			if (dy-dx < epsilon) { angle = PI+1; break; } // if dx == dy and dy is between 0 & 1 ... point is on the border line
+			// && dy > 0 && dy < 1
+			//if not a vertex or on border lines... sum the angles
+			double dtheta = atan2(y2 - y, x2 - x) - atan2(y1 - y, x1 - x);
 			while (dtheta > PI) dtheta -= TWOPI;
 			while (dtheta < -PI) dtheta += TWOPI;
 			angle += dtheta;
-
 		}
 		//write out if point is in polygon
 		if (abs(angle) < PI) { out[ii] = 0; } else { out[ii] = 1; }
