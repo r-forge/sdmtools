@@ -33,7 +33,14 @@ point.in.polygon = function(pnts,poly)	{
 #Examples
 
 pnts = cbind(x=c(1.5,3,1.5,2,2.5,3,4,3.25),y=c(1.5,1.5,2.5,3,3.5,3.5,4.5,2.25))
+pnts = expand.grid(x=seq(1,5,0.5),y=seq(1,5,0.5))
 poly = cbind(x=c(2,3,3.5,3.5,3,4,5,4,5,5,4,3,3,3,2,2,1,1,1,1,2),y=c(1,2,2.5,2,2,1,2,3,4,5,4,5,4,3,3,4,5,4,3,2,2))
 
 out = point.in.polygon(pnts,poly)
 
+png()
+plot(poly)
+polygon(poly,col='blue')
+points(out[which(out$pip==0),1:2],pch='x')
+points(out[which(out$pip==1),1:2],pch='0')
+dev.off()
