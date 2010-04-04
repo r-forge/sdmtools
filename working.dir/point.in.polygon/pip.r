@@ -10,8 +10,6 @@ R CMD SHLIB pip.c
 ####################################################################################
 #the function
 
-dyn.load("/homes/31/jc165798/SCRIPTS/sdmtools/working.dir/point.in.polygon/pip.so")
-
 point.in.polygon = function(pnts,poly.pnts)	{
 	#check if pnts & poly is 2 column matrix or dataframe
 	pnts = as.matrix(pnts); poly.pnts = as.matrix(poly.pnts)
@@ -28,6 +26,7 @@ point.in.polygon = function(pnts,poly.pnts)	{
 	#return the value
 	return(out)
 }
+
 
 ####################################################################################
 #Examples
