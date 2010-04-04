@@ -10,25 +10,6 @@ this is code for extracting information about point in polygon..
 double TWOPI = 2 * PI;
 double epsilon = 0.000000001; // threshold value
 
-/*
-   Return the angle between two vectors on a plane
-   The angle is from vector 1 to vector 2, positive anticlockwise
-   The result is between -pi -> pi
-*/
-double Angle2D(double x1, double y1, double x2, double y2)
-{
-	double dtheta,theta1,theta2;
-
-	theta1 = atan2(y1,x1);
-	theta2 = atan2(y2,x2);
-	dtheta = theta2 - theta1;
-	while (dtheta > PI) dtheta -= TWOPI;
-	while (dtheta < -PI) dtheta += TWOPI;
-	printf("n points ... %f \n", dtheta);
-	return(dtheta);
-}
-
-
 SEXP pip(SEXP pntx, SEXP pnty, SEXP pntn, SEXP polyx, SEXP polyy, SEXP polyn)
 {
 	//define the pointers to the variables
@@ -48,7 +29,7 @@ SEXP pip(SEXP pntx, SEXP pnty, SEXP pntn, SEXP polyx, SEXP polyy, SEXP polyn)
 	
 	//define some other variables
 	int ii, jj;
-	double p1x, p2x, p1y, p2y;
+	double x, x1, x2, y, y1, y2;
 	
 	
 	//cycle through the points
@@ -57,31 +38,26 @@ SEXP pip(SEXP pntx, SEXP pnty, SEXP pntn, SEXP polyx, SEXP polyy, SEXP polyn)
 		//cycle through the polygon vertices and sum the angles
 		double angle = 0.0;
 		for (jj=0;jj<npl;jj++) {
-			if (ply[jj] == pty[ii] && plx[jj] == ptx[ii]) { angle = PI+1; break; }//if point is a vertex... set it as within the polygon
-			if (ply[jj] - pty[ii] < epsilon && pty[ii] - ply[(jj+1) % npl] < epsilon) { // if points in horizontal line... point is in polygon
-				angle = PI+1; break;
-			} else if (plx[jj] - ptx[ii] < epsilon && ptx[ii] - plx[(jj+1) % npl] < epsilon) { //if points in verticle line... point is in polygon
-				angle = PI+1; break;
-			} else if ((ply[jj] - pty[ii])/(plx[jj] - ptx[ii]) - (ply[jj] - ply[(jj+1) % npl])/(plx[jj] - plx[(jj+1) % npl]) < epsilon ) { //if the slopes are the same... check if within bounding box
-				if ((pty[ii] >= ply[jj] && pty[ii] <= ply[(jj+1) % npl]) ||(pty[ii] <= ply[jj] && pty[ii] >= ply[(jj+1) % npl]))			{
-					if ((ptx[ii] >= plx[jj] && ptx[ii] <= plx[(jj+1) % npl]) || (ptx[ii] <= plx[jj] && ptx[ii] >= plx[(jj+1) % npl])) { //if point is within the bounding box of the points
-						angle = PI+1; break; 
-					}
-				}			
-			} else { // if not a vertex or part of the polygon, sum the angles
-				p1y = ply[jj] - pty[ii];
-				p2y = ply[(jj+1) % npl] - pty[ii];
-				p1x = plx[jj] - ptx[ii];
-				p2x = plx[(jj+1) % npl] - ptx[ii];
-				
-				double theta1 = atan2(ply[jj] - pty[ii],plx[jj] - ptx[ii]);
-				double theta2 = atan2(ply[(jj+1) % npl] - pty[ii],plx[(jj+1) % npl] - ptx[ii]);
-				double dtheta = theta2 - theta1;
-
-				while (dtheta > PI) dtheta -= TWOPI;
-				while (dtheta < -PI) dtheta += TWOPI;
-				angle += dtheta;
+			//define the points
+			x1 = plx[jj]; x2 = plx[(jj+1) % npl]; x = ptx[ii];
+			y1 = ply[jj]; y2 = ply[(jj+1) % npl]; y = pty[ii];
+			//check if point are vertix
+			if (x == x1 && y == y1) { angle = PI+1; break; }
+			//check if point is on border between 2 points
+			if (x == x1 && x == x2) { if ((y1 <= y && y <= y2) || (y1 >= y && y >= y2)) { angle = PI+1; break; } } // check point between two horizontal points
+			if (y == y1 && y == y2) { if ((x1 <= x && x <= x2) || (x1 >= x && x >= x2)) { angle = PI+1; break; } } // check point between two verticle points
+			if ((y1-y2)/(x1-x2) == (y1-y)/(x1-x)) { //check if points have same slope and then within bounding box of polygon points
+				if (((x1 <= x && x <= x2) || (x1 >= x && x >= x2)) && ((y1 <= y && y <= y2) || (y1 >= y && y >= y2))) { angle = PI+1; break; }
 			}
+			
+			double theta1 = atan2(y1 - y, x1 - x);
+			double theta2 = atan2(y2 - y, x2 - x);
+			double dtheta = theta2 - theta1;
+
+			while (dtheta > PI) dtheta -= TWOPI;
+			while (dtheta < -PI) dtheta += TWOPI;
+			angle += dtheta;
+
 		}
 		//write out if point is in polygon
 		if (abs(angle) < PI) { out[ii] = 0; } else { out[ii] = 1; }
