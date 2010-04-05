@@ -10,6 +10,8 @@ R CMD SHLIB pip.c
 ####################################################################################
 #the function
 
+dyn.load("/homes/31/jc165798/SCRIPTS/sdmtools/working.dir/point.in.polygon/pip.so")
+
 point.in.polygon = function(pnts,poly.pnts)	{
 	#check if pnts & poly is 2 column matrix or dataframe
 	pnts = as.matrix(pnts); poly.pnts = as.matrix(poly.pnts)
@@ -31,14 +33,18 @@ point.in.polygon = function(pnts,poly.pnts)	{
 ####################################################################################
 #Examples
 
-pnts = expand.grid(x=seq(1,5,0.2),y=seq(1,5,0.2))
+#define the points and polygon
+pnts = expand.grid(x=seq(1,6,0.1),y=seq(1,6,0.1))
 polypnts = cbind(x=c(2,3,3.5,3.5,3,4,5,4,5,5,4,3,3,3,2,2,1,1,1,1,2),y=c(1,2,2.5,2,2,1,2,3,4,5,4,5,4,3,3,4,5,4,3,2,2))
 
-out = point.in.polygon(pnts,polypnts)
+#plot the polygon and all points to be checked
+plot(rbind(polypnts, pnts))
+polygon(polypnts,col='#99999990')
 
-png()
-	plot(polypnts)
-	polygon(polypnts,col='blue')
-	points(out[which(out$pip==0),1:2],pch='x')
-	points(out[which(out$pip==1),1:2],pch='0')
+#create check which points fall within the polygon
+out = point.in.polygon(pnts,polypnts)
+head(out)
+
+#identify points not in the polygon with an X
+points(out[which(out$pip==0),1:2],pch='X')
 dev.off()

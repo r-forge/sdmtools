@@ -31,8 +31,7 @@ SEXP pip(SEXP pntx, SEXP pnty, SEXP pntn, SEXP polyx, SEXP polyy, SEXP polyn)
 	
 	//define some other variables
 	int ii, jj;
-	double x, x1, x2, y, y1, y2, dy, dx;
-	
+	double x, x1, x2, y, y1, y2, dy, dx, dd;
 	
 	//cycle through the points
 	for (ii=0;ii<npt;ii++) {
@@ -47,9 +46,10 @@ SEXP pip(SEXP pntx, SEXP pnty, SEXP pntn, SEXP polyx, SEXP polyy, SEXP polyn)
 			//check if point is on border line between 2 points
 			if (x == x1 && x == x2) { if ((y1 <= y && y <= y2) || (y1 >= y && y >= y2)) { angle = PI+1; break; } } // check point between two horizontal points
 			if (y == y1 && y == y2) { if ((x1 <= x && x <= x2) || (x1 >= x && x >= x2)) { angle = PI+1; break; } } // check point between two verticle points
-			dy = (y1-y)/(y1-y2); dx = (x1-x)/(x1-x2); //check if the relative change in x == relative change in y
-			printf("dx - dy ... %f - %f \n", dx, dy);
-			if (dy-dx < epsilon) { angle = PI+1; break; } // if dx == dy and dy is between 0 & 1 ... point is on the border line
+			dy = (y1==y2) ? -9999:(y1-y)/(y1-y2); //check if the relative change in x == relative change in y
+			dx = (x1==x2) ? -9999:(x1-x)/(x1-x2); //check if the relative change in x == relative change in y
+			dd = dy-dx; dd = (dd<0) ? -dd:dd;
+			if (dd < epsilon && dy>0 && dy<1) { angle = PI+1; break; } // if dx == dy and dy is between 0 & 1 ... point is on the border line
 			// && dy > 0 && dy < 1
 			//if not a vertex or on border lines... sum the angles
 			double dtheta = atan2(y2 - y, x2 - x) - atan2(y1 - y, x1 - x);
