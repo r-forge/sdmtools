@@ -21,17 +21,15 @@ SEXP trial(SEXP p, SEXP fn, SEXP rho) {
     PROTECT(x = allocVector(REALSXP, n)); //create a vector the same length as p
 	PROTECT(R_fcall = lang2(fn, R_NilValue));
 	
-	double *tx;
-	tx = REAL(x);
-	
+
     for (i = 0; i < n; i++) { //copy data ensuring it is finite
-		tx[i] = tp[i];
+		REAL(x)[i] = tp[i];
     }
 
     SETCADR(R_fcall, x);
     PROTECT_WITH_INDEX(s = eval(R_fcall, rho), &ipx);
     REPROTECT(s = coerceVector(s, REALSXP), ipx);
-    UNPROTECT(2);
+    UNPROTECT(4);
     return s;
 
 }
