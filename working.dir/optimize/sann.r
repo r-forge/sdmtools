@@ -22,11 +22,7 @@ dyn.load("/homes/31/jc165798/Rforge/working.dir/optimize/sann.so")
 sann <- function (par, fn, gr = NULL, ..., control = list()) {
     fn1 <- function(par) fn(par, ...) #the function to be optimized and the prameters for it
     gr1 <- if (!is.null(gr)) { function(par) gr(par, ...) } #define the fuction to replace pnts
-    con <- list(trace = 0, fnscale = 1, parscale = rep.int(1,length(par)), #default conditions
-		ndeps = rep.int(0.001, length(par)), maxit = 100L, 
-        abstol = -Inf, reltol = sqrt(.Machine$double.eps), alpha = 1, 
-        beta = 0.5, gamma = 2, REPORT = 10, type = 1, lmm = 5, 
-        factr = 1e+07, pgtol = 0, tmax = 10, temp = 10)
+    con <- list(trace=0, maxit=10000, REPORT=10, tmax=10, temp=10)  #default conditions
     nmsC <- names(con)
     con[(namc <- names(control))] <- control #alter the conditions by what was entered in the function call
     if (length(noNms <- namc[!namc %in% nmsC])) warning("unknown names in control: ", paste(noNms, collapse = ", ")) #check control names
