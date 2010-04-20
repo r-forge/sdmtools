@@ -146,6 +146,7 @@ SEXP sann(SEXP par, SEXP fn, SEXP gr, SEXP con, SEXP rho)
 		}
 		if (trace && ((itdoc % trace) == 0)) Rprintf("iter %8d value %f\n", its - 1, val);
 		itdoc++;
+		Rprintf ("iteration %i\n", its);
     }
     if (trace) { Rprintf ("final         value %f\n", val); Rprintf ("sann stopped after %d iterations\n", its - 1); }
     PutRNGstate();
