@@ -1,24 +1,28 @@
-\name{PatchStat}
+\name{legend.gradient}
 \Rdversion{1.1}
-\alias{PatchStat}
+\alias{legend.gradient}
 
-\title{ Landscape Patch Statistics }
+\title{ Legend Gradient }
 
 \description{
-\code{PatchStat} calculates the patch statistics for individual patches
-identified in a matrix of data. The matrix can be a raster of class 'asc' 
-(adehabitat package), 'RasterLayer' (raster package) or 'SpatialGridDataFrame' 
-(sp package).
+\code{legend.gradient} create and display a gradient legend on a plot or image file. The 
+place and size of the legend is defined by coordinates, previously identified.
 }
 
 \usage{
-PatchStat(mat,cellsize=1)
+legend.gradient(pnts,cols=heat.colors(100),limits=c(0,1), title='Legend', cex=2)
 }
 \arguments{
-  \item{mat}{a matrix of data with individual patches identified as with \code{ConnCompLabel};
+  \item{pnts}{a matrix of data with individual patches identified as with \code{ConnCompLabel};
   The matrix can be a raster of class 'asc' (adehabitat package), 'RasterLayer' 
   (raster package) or 'SpatialGridDataFrame' (sp package)}
-  \item{cellsize}{cell size (in meters) is a single value representing the width/height
+  \item{cols}{cell size (in meters) is a single value representing the width/height
+  of cell edges (assuming square cells)}
+  \item{limits}{cell size (in meters) is a single value representing the width/height
+  of cell edges (assuming square cells)}
+  \item{title}{cell size (in meters) is a single value representing the width/height
+  of cell edges (assuming square cells)}
+  \item{cex}{cell size (in meters) is a single value representing the width/height
   of cell edges (assuming square cells)}
 }
 

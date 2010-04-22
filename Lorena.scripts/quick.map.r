@@ -47,6 +47,6 @@ tasc = read.asc.gz("D:/Lorena/R Package (fragmentation)/rf.6kybp.asc.gz")
 #put in the gradient scale
 pnts = cbind(x =c(146.458, 146.688, 146.688, 146.458), y =c(-16.333, -16.333, -16.752,-16.752))
 
-quick.map(tasc,0.08,bkgd.col = 'darkgrey', Scalebar=(x= 145.101, y=-19535, distance=20))
+quick.map(tasc,0.08,bkgd.col = 'darkgrey')
 
 Scalebar(x= 145.101, y=-19535, distance=20)
