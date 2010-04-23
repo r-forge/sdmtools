@@ -32,6 +32,7 @@ nothing is returned, a gradient legend is added to a plot or a image.
 
 \examples{
 
+#read an ascii file
 tasc = read.asc.gz("D:/Lorena/R Package (fragmentation)/rf.6kybp.asc.gz")
 
 # Create a color ramp
@@ -40,10 +41,10 @@ colormap=c("grey","yellow","yellow2","yellowgreen","goldenrod3","firebrick")
 #create an image
 image(tasc,col=colormap,zlim=c(0,1), axes=F, xlab="", ylab="", ann=FALSE)
 
-#put in the gradient scale
+#points for the gradient legend
 pnts = cbind(x =c(146.458, 146.688, 146.688, 146.458), y =c(-16.333, -16.333, -16.752,-16.752))
 
-#create the scale legend
+#create the gradient legend
 legend.gradient(pnts,colormap,c("Low","High"))
 
 #create the Scalebar

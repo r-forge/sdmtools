@@ -60,28 +60,3 @@ legend.gradient(pnts,colormap,c("Low","High"))
 #create the Scalebar
 Scalebar(x= 145.101, y=-19.535, distance=1)
 
-
-#################MAP WITH 2 COLORS##############################################
-#define the input data directory
-SDM.dir = "D:/Lorena/R Package (fragmentation)"
-
-#define the output folder
-outfolder = "D:/Lorena/R Package (fragmentation)"
-
-# READING AN ASC II FILE
-tasc = read.asc.gz("D:/Lorena/R Package (fragmentation)/rf.6kybp.asc.gz")
-
-# Choose two colors
-colormap=c("grey", "red")
-
-#create an image
-image(tasc,col=colormap,zlim=c(0,1), axes=F, xlab="", ylab="", ann=FALSE)
-
-#put in the gradient scale
-pnts = cbind(x =c(146.458, 146.688, 146.688, 146.458), y =c(-16.333, -16.333, -16.752,-16.752))
-
-#create the scale legend
-legend.gradient(pnts,colormap,c("Low","High"))
-
-#create the Scalebar
-Scalebar(x= 145.101, y=-19.535, distance=1)
