@@ -5,69 +5,48 @@
 \title{ Legend Gradient }
 
 \description{
-\code{legend.gradient} create and display a gradient legend on a plot or image file. The 
+\code{legend.gradient} creates and displays a gradient legend on a plot or image file. The 
 place and size of the legend is defined by coordinates, previously identified.
 }
 
 \usage{
-legend.gradient(pnts,cols=heat.colors(100),limits=c(0,1), title='Legend', cex=2)
+legend.gradient(pnts,cols=heat.colors(100),limits=c(0,1), title='Legend', ...)
 }
 \arguments{
-  \item{pnts}{a matrix of data with individual patches identified as with \code{ConnCompLabel};
-  The matrix can be a raster of class 'asc' (adehabitat package), 'RasterLayer' 
-  (raster package) or 'SpatialGridDataFrame' (sp package)}
-  \item{cols}{cell size (in meters) is a single value representing the width/height
-  of cell edges (assuming square cells)}
-  \item{limits}{cell size (in meters) is a single value representing the width/height
-  of cell edges (assuming square cells)}
-  \item{title}{cell size (in meters) is a single value representing the width/height
-  of cell edges (assuming square cells)}
-  \item{cex}{cell size (in meters) is a single value representing the width/height
-  of cell edges (assuming square cells)}
+  \item{pnts}{x and y coordinates of the gradient location in the plot}
+  \item{cols}{a set of 2 or more colors used in the image, to create the gradient}
+  \item{limits}{to specify the min and max values of the gradient in the legend}
+  \item{title}{to specify the title of the legend}
+  \item{...}{other graphical parameters defined by image() or plot()}
 }
 
 \details{
-The patch statistics are based on statistics calculated by fragstats 
-\url{http://www.umass.edu/landeco/research/fragstats/fragstats.html}.
+
 }
 
 \value{
-a data.frame listing
-  \item{patchID}{the unique ID for each patch.}
-  \item{n.cell}{the number of cells for each patch, specified in square meters.}
-  \item{n.core.cell}{the number of cells in the core area, without the edge area}
-  \item{n.edges.perimeter}{the number of outside edges perimeter of the patches (given in number of cell surfaces).}
-  \item{n.edges.internal}{the number of internal edges perimeter of the patches}
-  \item{area}{the area of each patch comprising a landscape mosaic.}
-  \item{core.area}{represents the interior area of the patch, greater than the specified depth-of-edge distance from the perimeter.}
-  \item{perimeter}{the perimeter of the patch, including any internal holes in the patch, specified in meters.}
-  \item{perim.area.ratio}{the ratio of the patch perimeter (m) to area (m2).}
-  \item{shape.index}{the shape complexity, sum of each patches perimeter divided by the square root of patch area.}
-  \item{frac.dim.index}{fractal dimension index reflects shape complexity across a range of spatial scales; approaches 2 times the logarithm of patch perimeter (m) divided by the logarithm of patch area (m2).}
-  \item{core.area.index}{quantifies core area as a percentage of patch area.}
+nothing is returned, a gradient legend is added to a plot or a image.
 }
 
-\author{Jeremy VanDerWal \email{jjvanderwal@gmail.com}}
+\author{Lorena Falconi \email{lorefalconi@gmail.com}}
 
 \examples{
 
-#define a simple binary matrix
-tmat = { matrix(c(	0,0,0,1,0,0,1,1,0,1,
-					0,0,1,0,1,0,0,0,0,0,
-					0,1,NA,1,0,1,0,0,0,1,
-					1,0,1,1,1,0,1,0,0,1,
-					0,1,0,1,0,1,0,0,0,1,
-					0,0,1,0,1,0,0,1,1,0,
-					1,0,0,1,0,0,1,0,0,1,
-					0,1,0,0,0,1,0,0,0,1,
-					0,0,1,1,1,0,0,0,0,1,
-					1,1,1,0,0,0,0,0,0,1),nr=10,byrow=T) }
-#do the connected component labelling
-ccl.mat = ConnCompLabel(tmat)
-ccl.mat
-image(t(ccl.mat[10:1,]),col=c('grey',rainbow(length(unique(ccl.mat))-1)))
-#calculate the patch statistics
-ps.data = PatchStat(ccl.mat)
-ps.data
+tasc = read.asc.gz("D:/Lorena/R Package (fragmentation)/rf.6kybp.asc.gz")
+
+# Create a color ramp
+colormap=c("grey","yellow","yellow2","yellowgreen","goldenrod3","firebrick")
+
+#create an image
+image(tasc,col=colormap,zlim=c(0,1), axes=F, xlab="", ylab="", ann=FALSE)
+
+#put in the gradient scale
+pnts = cbind(x =c(146.458, 146.688, 146.688, 146.458), y =c(-16.333, -16.333, -16.752,-16.752))
+
+#create the scale legend
+legend.gradient(pnts,colormap,c("Low","High"))
+
+#create the Scalebar
+Scalebar(x= 145.101, y=-19.535, distance=1)
 
 }
