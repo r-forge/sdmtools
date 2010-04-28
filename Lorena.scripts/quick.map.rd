@@ -10,17 +10,20 @@ background color, and create the gradient legend in the map.
 }
 
 \usage{
-quick.map(sdm.asc, threshold, bkgd.col = 'grey',cols=heat.colors(100), axes=TRUE)
+quick.map(sdm.asc, threshold, bkgd.col = 'grey',cols=heat.colors(100), axes=TRUE, zlim=NULL)
 }
 \arguments{
   \item{sdm.asc}{an object of class "asc" as defined in the adehabitat package}
   \item{threshold}{to indicate the thereshold limit of the "asc" object}
   \item{bkgd.col}{to specify the background color}
-  \item{cols}{a set of 2 or more colors to be used in the image and the gradiente legend}
+  \item{cols}{a set of 2 or more colors to be used in the image and the gradient legend}
+  \item{zlim}{to specify the upper an lower limits, which are going to be the labels of the gradient legend}
   \item{...}{other graphical parameters defined by image() or plot()}
 }
 
 \details{
+Returns an image with the gradient legend. The gradient legend would be created if the user previously 
+specify the coordinates werte the legend have to be done.
 
 }
 
@@ -57,7 +60,8 @@ tasc.col=colorRampPalette(c("yellow","orange", "red"))(5)
 quick.map(tasc,0.09,bkgd.col = 'darkgrey', cols=tasc.col,axes=F, xlim=c(0.0,1.35))
 
 #########################
-#Create an image with two colors, the background color and the 
+#Create an image with two colors: below the threshold and above the threshold
+# To create the legend.gradient in 
 xlim=c(-0.5,1)
 ylim=c(0,1)
 wid = diff(xlim)*0.05
@@ -67,6 +71,6 @@ xvals = c(xlim[1]+wid,xlim[1]+2*wid,xlim[1]+2*wid,xlim[1]+wid)
 yvals = c(ylim[1]+ht,ylim[1]+ht,ylim[1]+2*ht,ylim[1]+2*ht)
 
 pnts=(cbind(xvals,yvals))
-
+# Set the images colors: above the threshold is black and below the threshold is darkgrey.
 quick.map(tasc,0.09,bkgd.col = 'darkgrey', cols="black",axes=F, xlim=c(-0.8, 1))
 }
