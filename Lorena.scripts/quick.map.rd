@@ -22,8 +22,8 @@ quick.map(sdm.asc, threshold, bkgd.col = 'grey',cols=heat.colors(100), axes=TRUE
 }
 
 \details{
-Returns an image with the gradient legend. The gradient legend would be created if the user previously 
-specify the coordinates werte the legend have to be done.
+An image is created with the gradient legend. The gradient legend would be created if the user previously 
+specifies the coordinates were the legend has to be done.
 
 }
 
@@ -47,7 +47,7 @@ tmat = { matrix(c(	0,0,0,1,0,0,1,1,0,1,
 					          0,0,1,1,1,0,0,1,1,1,
 				            1,1,1,0,0,0,0,1,1,1),nr=10,byrow=T) }
 
-#do the connected component labelling
+#do the connected component labeling
 tasc = ConnCompLabel(tmat)
 
 #put in the gradient scale
@@ -60,8 +60,9 @@ tasc.col=colorRampPalette(c("yellow","orange", "red"))(5)
 quick.map(tasc,0.09,bkgd.col = 'darkgrey', cols=tasc.col,axes=F, xlim=c(0.0,1.35))
 
 #########################
-#Create an image with two colors: below the threshold and above the threshold
-# To create the legend.gradient in 
+# Create an image with two colors: below the threshold and above the threshold
+# The next version of SDM Tools will let you create the legend.gradient  at a specific side of your image, and the user would not need to set the coordinates.
+# To create the legend.gradient at the bottom left of your image without set up the coordinates at the image you can do this:
 xlim=c(-0.5,1)
 ylim=c(0,1)
 wid = diff(xlim)*0.05
@@ -69,7 +70,7 @@ ht = diff(ylim)*0.1
 
 xvals = c(xlim[1]+wid,xlim[1]+2*wid,xlim[1]+2*wid,xlim[1]+wid)
 yvals = c(ylim[1]+ht,ylim[1]+ht,ylim[1]+2*ht,ylim[1]+2*ht)
-
+#Create the points for the legend.gradient
 pnts=(cbind(xvals,yvals))
 # Set the images colors: above the threshold is black and below the threshold is darkgrey.
 quick.map(tasc,0.09,bkgd.col = 'darkgrey', cols="black",axes=F, xlim=c(-0.8, 1))

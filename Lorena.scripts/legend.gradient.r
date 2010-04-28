@@ -34,7 +34,7 @@ legend.gradient = function(pnts,cols=heat.colors(100),limits=c(0,1), title='Lege
 }
 
 
-######################EXAMPLE SCALE LEGEND######################################
+######################EXAMPLE LEGEND.GRADIENT######################################
 
 #define a simple binary matrix
 tmat = { matrix(c(	0,0,0,1,0,0,1,1,0,1,
@@ -47,7 +47,7 @@ tmat = { matrix(c(	0,0,0,1,0,0,1,1,0,1,
 				            0,1,0,0,0,1,0,NA,NA,NA,
 					          0,0,1,1,1,0,0,NA,NA,NA,
 				            1,1,1,0,0,0,0,NA,NA,NA),nr=10,byrow=T) }
-#do the connected component labelling
+#do the connected component labeling
 tasc = ConnCompLabel(tmat)
 
 # Create a color ramp
