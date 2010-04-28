@@ -15,7 +15,7 @@ legend.gradient(pnts,cols=heat.colors(100),limits=c(0,1), title='Legend', ...)
 \arguments{
   \item{pnts}{x and y coordinates of the gradient location in the plot}
   \item{cols}{a set of 2 or more colors used in the image, to create the gradient}
-  \item{limits}{to specify the min and max values of the gradient in the legend}
+  \item{limits}{to label the min and max values of the gradient in the legend}
   \item{title}{to specify the title of the legend}
   \item{...}{other graphical parameters defined by image() or plot()}
 }
@@ -32,22 +32,31 @@ nothing is returned, a gradient legend is added to a plot or a image.
 
 \examples{
 
-#read an ascii file
-tasc = read.asc.gz("D:/Lorena/R Package (fragmentation)/rf.6kybp.asc.gz")
+#define a simple binary matrix
+tmat = { matrix(c(	0,0,0,1,0,0,1,1,0,1,
+                    0,0,1,0,1,0,0,0,0,0,
+                    0,1,NA,1,0,1,0,0,0,1,
+					          1,0,1,1,1,0,1,0,0,1,
+				            0,1,0,1,0,1,0,0,0,1,
+					          0,0,1,0,1,0,0,1,1,0,
+					          1,0,0,1,0,0,1,0,0,0,
+				            0,1,0,0,0,1,0,NA,NA,NA,
+					          0,0,1,1,1,0,0,NA,NA,NA,
+				            1,1,1,0,0,0,0,NA,NA,NA),nr=10,byrow=T) }
+#do the connected component labelling
+tasc = ConnCompLabel(tmat)
 
 # Create a color ramp
-colormap=c("grey","yellow","yellow2","yellowgreen","goldenrod3","firebrick")
-
+colormap=c("grey","yellow","yellowgreen","olivedrab1","lightblue4")
+                                                                  
 #create an image
-image(tasc,col=colormap,zlim=c(0,1), axes=F, xlab="", ylab="", ann=FALSE)
+image(tasc,col=colormap, axes=F, xlab="", ylab="", ann=FALSE)
 
 #points for the gradient legend
-pnts = cbind(x =c(146.458, 146.688, 146.688, 146.458), y =c(-16.333, -16.333, -16.752,-16.752))
+pnts = cbind(x =c(0.8,0.9,0.9,0.8), y =c(1.0,1.0,0.8,0.8))
 
 #create the gradient legend
 legend.gradient(pnts,colormap,c("Low","High"))
 
-#create the Scalebar
-Scalebar(x= 145.101, y=-19.535, distance=1)
 
 }

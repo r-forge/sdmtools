@@ -18,7 +18,7 @@ for (lib in necessary) library(lib,character.only=T)
 
 # CREATE A FUNCTION FOR MAP COLORS
 
-quick.map= function(sdm.asc, threshold, bkgd.col = 'grey',cols=heat.colors(100)){
+quick.map= function(sdm.asc, threshold, bkgd.col = 'grey',cols=heat.colors(100), limits=c("Low","High"), axes=TRUE, ...){
     #get range of data
     trange=range(sdm.asc,na.rm=T)
     #make sure threshold is within range
@@ -28,25 +28,35 @@ quick.map= function(sdm.asc, threshold, bkgd.col = 'grey',cols=heat.colors(100))
     tvals = seq(threshold,trange[2],(trange[2]-threshold)/(length(cols)+2))
     for (i in 1:length(cols)) sdm.asc[which(!is.na(sdm.asc) & sdm.asc<tvals[i] & sdm.asc>=tvals[i+1])] = 0
     #create the image
-    image(sdm.asc, col=c(bkgd.col,cols))
-    #add the scale bar
-    legend.gradient(pnts,cols=c(bkgd.col,cols))
-    Scalebar(x= 145.101, y=-19535, distance=20)
+    image(sdm.asc, col=c(bkgd.col,cols),axes=T, xlab="", ylab="",...)
+    if (!any(ls() == 'zlim')) { lim = range(sdm.asc,na.rm=T) } else if (!is.null(zlim)) { lim = range(sdm.asc,na.rm=T) } else { lim = zlim }
+    #add the scale legend
+    legend.gradient(pnts,cols=c(bkgd.col,cols),limits=lim)
+    
 }
-
+ 
 #######################EXAMPLE COLORMAP#########################
-  # READING AN ASC II FILE
-#define the input data directory
-SDM.dir = "D:/Lorena/R Package (fragmentation)"
 
-#define the output folder
-outfolder = "D:/Lorena/R Package (fragmentation)"
+#create a matrix
+tmat = { matrix(c(	0,0,0,1,0,0,1,1,0,1,
+                    0,0,1,0,1,0,0,0,0,0,
+                    0,1,NA,1,0,1,0,0,0,1,
+					          1,0,1,1,1,0,1,0,0,1,
+				            0,1,0,1,0,1,0,0,0,1,
+					          0,0,1,0,1,0,0,1,1,0,
+					          1,0,0,1,0,0,1,0,0,0,
+				            0,1,0,0,0,1,0,0,0,1,
+					          0,0,1,1,1,0,0,1,1,1,
+				            1,1,1,0,0,0,0,1,1,1),nr=10,byrow=T) }
 
-tasc = read.asc.gz("D:/Lorena/R Package (fragmentation)/rf.6kybp.asc.gz")
+#do the connected component labelling
+tasc = ConnCompLabel(tmat)
 
 #put in the gradient scale
-pnts = cbind(x =c(146.458, 146.688, 146.688, 146.458), y =c(-16.333, -16.333, -16.752,-16.752))
+pnts = cbind(x =c(1.1,1.2,1.2,1.1), y =c(0.9,0.9,0.7,0.7))
 
-quick.map(tasc,0.08,bkgd.col = 'darkgrey')
+# Set the map and gradient leyend colors 
+tasc.col=colorRampPalette(c("yellow","orange", "red"))(5)
 
-Scalebar(x= 145.101, y=-19535, distance=20)
+#Create an image with the gradient legend
+quick.map(tasc,0.09,bkgd.col = 'darkgrey', cols=tasc.col,axes=F, xlim=c(0.0,1.35))

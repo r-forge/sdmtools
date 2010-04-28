@@ -5,18 +5,18 @@
 \title{ Quick Map }
 
 \description{
-\code{quick.map} creates and displays a gradient legend on a plot or image file. The 
-place and size of the legend is defined by coordinates, previously identified.
+\code{quick.map} creates and displays an image, identifying the threshold as the 
+background color, and create the gradient legend in the map.
 }
 
 \usage{
-quick.map(sdm.asc, threshold, bkgd.col = 'grey',cols=heat.colors(100))
+quick.map(sdm.asc, threshold, bkgd.col = 'grey',cols=heat.colors(100), axes=TRUE)
 }
 \arguments{
   \item{sdm.asc}{an object of class "asc" as defined in the adehabitat package}
-  \item{threshold}{to set the threshold of the asc object, it will be }
+  \item{threshold}{to indicate the thereshold limit of the "asc" object}
   \item{bkgd.col}{to specify the background color}
-  \item{cols}{a set of 2 or more colors to be used in the image and in the gradiente legend}
+  \item{cols}{a set of 2 or more colors to be used in the image and the gradiente legend}
   \item{...}{other graphical parameters defined by image() or plot()}
 }
 
@@ -32,13 +32,41 @@ nothing is returned, a gradient legend is added to a plot or a image.
 
 \examples{
 
-tasc = read.asc.gz("D:/Lorena/R Package (fragmentation)/rf.6kybp.asc.gz")
+#create a matrix
+tmat = { matrix(c(	0,0,0,1,0,0,1,1,0,1,
+                    0,0,1,0,1,0,0,0,0,0,
+                    0,1,NA,1,0,1,0,0,0,1,
+					          1,0,1,1,1,0,1,0,0,1,
+				            0,1,0,1,0,1,0,0,0,1,
+					          0,0,1,0,1,0,0,1,1,0,
+					          1,0,0,1,0,0,1,0,0,0,
+				            0,1,0,0,0,1,0,0,0,1,
+					          0,0,1,1,1,0,0,1,1,1,
+				            1,1,1,0,0,0,0,1,1,1),nr=10,byrow=T) }
+
+#do the connected component labelling
+tasc = ConnCompLabel(tmat)
 
 #put in the gradient scale
-pnts = cbind(x =c(146.458, 146.688, 146.688, 146.458), y =c(-16.333, -16.333, -16.752,-16.752))
+pnts = cbind(x =c(1.1,1.2,1.2,1.1), y =c(0.9,0.9,0.7,0.7))
 
-quick.map(tasc,0.08,bkgd.col = 'darkgrey')
+# Set the map and gradient leyend colors 
+tasc.col=colorRampPalette(c("yellow","orange", "red"))(5)
 
-Scalebar(x= 145.101, y=-19535, distance=20)
+#Create an image with the gradient legend
+quick.map(tasc,0.09,bkgd.col = 'darkgrey', cols=tasc.col,axes=F, xlim=c(0.0,1.35))
 
+#########################
+#Create an image with two colors, the background color and the 
+xlim=c(-0.5,1)
+ylim=c(0,1)
+wid = diff(xlim)*0.05
+ht = diff(ylim)*0.1
+
+xvals = c(xlim[1]+wid,xlim[1]+2*wid,xlim[1]+2*wid,xlim[1]+wid)
+yvals = c(ylim[1]+ht,ylim[1]+ht,ylim[1]+2*ht,ylim[1]+2*ht)
+
+pnts=(cbind(xvals,yvals))
+
+quick.map(tasc,0.09,bkgd.col = 'darkgrey', cols="black",axes=F, xlim=c(-0.8, 1))
 }
