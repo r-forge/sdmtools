@@ -1,11 +1,11 @@
-\name{interp2grid}
-\alias{interp2grid}
+\name{interp2pnt}
+\alias{interp2pnt}
 
-\title{ Bilinear and Bicubic Interpolation to Grid }
+\title{ Bilinear and Bicubic Interpolation to Points }
 
 \description{
 	This code was includes bicubic interpolation and bilinear interpolation adapted from Numerical Recipes in C: The are of scientific computing \url{http://www.nrbook.com/nr3/} (chapter 3... bicubic interpolation) and a bicubic interpolation from \url{http://www.paulinternet.nl/?page=bicubic} in java code.\n\n	
-	Inputs are a list of points representing grid coordinates to interpolate to from raster objects of class 'asc' (adehabitat package), 'RasterLayer' (raster package) or 'SpatialGridDataFrame' (sp package).
+	Inputs are a list of points to interpolate to from raster objects of class 'asc' (adehabitat package), 'RasterLayer' (raster package) or 'SpatialGridDataFrame' (sp package).
 }
 
 \usage{ interp2grid(mat,xout,yout,xin=NULL,yin=NULL,type=2) }
@@ -23,7 +23,7 @@
 	3 - bicubic adapted from online java code}
 }
 
-\value{ Returns a matrix of the originating class. }
+\value{ A vector of values in the same order and length of the inputs \code{xout} and \code{yout}. }
 
 \author{ Jeremy VanDerWal \email{jjvanderwal@gmail.com} }
 
@@ -32,23 +32,17 @@
 #create some data
 tx = seq(0,3,0.1)
 ty = seq(0,3,0.1)
+txy = data.frame(x=tx,y=ty)
 
 #create a matrix
 tmat = matrix(runif(16,1,16),nr=4)
 
 #do the interpolations
-bilinear1 = interp2grid(tmat,tx,ty,type=1)
-bicubic2 = interp2grid(tmat,tx,ty,type=2)
-bicubic3 = interp2grid(tmat,tx,ty,type=3)
+txy$bilinear1 = interp2grid(tmat,tx,ty,type=1)
+txy$bicubic2 = interp2grid(tmat,tx,ty,type=2)
+txy$bicubic3 = interp2grid(tmat,tx,ty,type=3)
 
-#show the plots
-#png(filename = "trials1.png",width=480*4,height=480*4,pointsize=20)
-	par(mfrow=c(2,2),cex=1)
-	image(tmat,main='base',zlim=c(0,16),col=heat.colors(100))	 
-	image(bilinear1,main='bilinear',zlim=c(0,16),col=heat.colors(100))	 
-	image(bicubic2,main='bicubic2',zlim=c(0,16),col=heat.colors(100))	 
-	image(bicubic3,main='bicubic3',zlim=c(0,16),col=heat.colors(100))	 
-#dev.off()
-
+#look at the data
+head(txy)
 
 }

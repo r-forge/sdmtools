@@ -1,4 +1,4 @@
-interp2grid <-
+interp2pnt <-
 function(mat,xout,yout,xin=NULL,yin=NULL,type=2) {
 	#check input for class for returning info
 	if (class(mat) == 'asc') { 
@@ -15,13 +15,10 @@ function(mat,xout,yout,xin=NULL,yin=NULL,type=2) {
 	mat = try(as.matrix(mat))
 	if (!is.matrix(mat)) stop('objects must be a matrix')
 	if (length(which(is.na(mat)))>0) warning('missing values in matrix can cause interpolation to stop if value used in interpolation')
+	#check the lengths of xout & yout to be the same length
+	if (length(xout) != length(yout)) stop('xout & yout must be of the same lengths')
 	#ensure type is 1, 2 or 3
 	if (!(type %in% 1:3)) stop('type must be a single numeric value of 1, 2 or 3. See help file')
-	#ensure xout & yout are in order and cell sizes are square
-	xout = sort(xout); yout = sort(yout)
-	if (any(diff(xout)!=mean(diff(xout)))) stop('differences in xout/yout must be consistent & identical')
-	if (any(diff(yout)!=mean(diff(yout)))) stop('differences in xout/yout must be consistent & identical')
-	if (mean(diff(xout))!=mean(diff(xout))) stop('differences in xout/yout must be consistent & identical')
 	
 	#get the xy of mat
 	if (is.null(xin) | is.null(yin)){
@@ -40,16 +37,10 @@ function(mat,xout,yout,xin=NULL,yin=NULL,type=2) {
 	#if attrib is null ... return a basic matrix
 	if (is.null(attrib)) {
 		#do the interpolation
-		out = .Call('interp2grid',mat,mat.x,mat.y,xout,yout,as.integer(type))
-		out = matrix(out,nr=length(yout),byrow=FALSE)
-		rownames(out)=yout;colnames(out)=xout
+		out = .Call('interp2pnt',mat,mat.x,mat.y,xout,yout,as.integer(type))
 	} else { #if of a different raster type
 		#do the interpolation
 		out = .Call('interp2grid',mat,mat.y,mat.x,yout,xout,as.integer(type))
-		#convert to asc file
-		out = as.asc(matrix(out,nr=length(xout),byrow=FALSE),xll=min(xout),yll=min(yout),cellsize=mean(diff(xout)),type="numeric")
-		if (attrib=='raster') out = raster.from.asc(out)
-		if (attrib=='sp') out = sp.from.asc(out)
 	}
 	
 	#return the value
