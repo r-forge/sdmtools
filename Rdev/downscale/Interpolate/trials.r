@@ -1,13 +1,31 @@
 
-cd /homes/31/jc165798/working/R.downscale
+cd /homes/31/jc165798/SCRIPTS/sdmtools/Rdev/downscale/Interpolate/
 
 R CMD SHLIB interpolate.c
 
 #.call inputs are 
 # a matrix, the x and then y coords of the matrix, the x & y coordinates of the output matrix and the type of interpolation
 #################################################################################
-setwd('/homes/31/jc165798/working/R.downscale')
-dyn.load("/homes/31/jc165798/working/R.downscale/interpolate.so")
+setwd('/homes/31/jc165798/SCRIPTS/sdmtools/Rdev/downscale/Interpolate/')
+dyn.load("/homes/31/jc165798/SCRIPTS/sdmtools/Rdev/downscale/Interpolate/interpolate.so")
+
+
+interpolate = function(tmat,pnts,type=2) {
+	#values to interpolate to
+	tx = seq(0,3,0.1)
+	ty = seq(0,3,0.1)
+	txy=expand.grid(x=tx,y=ty)
+	#tmat = matrix(round(runif(16,1,16)),nr=4)
+	#tmat[1,1] = NA
+	tmat = matrix(1:16,nr=4)
+	txy$bilinear = .Call('interpolate',tmat,0:3,0:3,tx,ty,as.integer(1))
+	txy$bicubic1 = .Call('interpolate',tmat,0:3,0:3,tx,ty,as.integer(2))
+	txy$bicubic2 = .Call('interpolate',tmat,0:3,0:3,tx,ty,as.integer(3))
+
+	return(txy)
+
+}
+
 
 #values to interpolate to
 tx = seq(0,3,0.1)
@@ -27,6 +45,8 @@ png(filename = "trials.png",width=480*4,height=480*4,pointsize=20)
 	image(matrix(txy$bicubic1,nr=length(ty),byrow=T),main='bicubic1',zlim=c(0,16),col=heat.colors(100))	 
 	image(matrix(txy$bicubic2,nr=length(ty),byrow=T),main='bicubic2',zlim=c(0,16),col=heat.colors(100))	 
 dev.off()
+
+
 
 
 #################################################################################
