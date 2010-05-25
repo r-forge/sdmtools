@@ -37,10 +37,10 @@ function(mat,xout,yout,xin=NULL,yin=NULL,type=2) {
 	#if attrib is null ... return a basic matrix
 	if (is.null(attrib)) {
 		#do the interpolation
-		out = .Call('interp2pnt',mat,mat.x,mat.y,xout,yout,as.integer(type))
+		out = .Call('interp2pnts',mat,mat.x,mat.y,xout,yout,as.integer(type))
 	} else { #if of a different raster type
 		#do the interpolation
-		out = .Call('interp2grid',mat,mat.y,mat.x,yout,xout,as.integer(type))
+		out = .Call('interp2pnts',mat,mat.y,mat.x,yout,xout,as.integer(type))
 	}
 	
 	#return the value

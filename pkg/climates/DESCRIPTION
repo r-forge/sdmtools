@@ -1,7 +1,7 @@
 Package: climates
 Type: Package
 Title: Methods for working with and downscaling climate
-Version: 1.0
+Version: 0.1
 Date: 2010-05-24
 Author: Jeremy VanDerWal
 Maintainer: Jeremy VanDerWal <jjvanderwal@gmail.com>
